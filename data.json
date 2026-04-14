@@ -1,0 +1,18 @@
+{
+  "inventory": [
+    {"name":"Whole Milk","cat":"Dairy","qty":18,"max":30,"unit":"L","status":"ok","cost":0.90,"expiry":"2026-03-22"},
+    {"name":"Heavy Cream","cat":"Dairy","qty":2.5,"max":10,"unit":"L","status":"critical","cost":4.40,"expiry":"2026-03-17"},
+    {"name":"Maple Syrup","cat":"Sweeteners","qty":0.8,"max":4,"unit":"L","status":"critical","cost":12.00,"expiry":"2026-11-01"},
+    {"name":"Waffle Cones","cat":"Cones & Toppings","qty":48,"max":200,"unit":"units","status":"critical","cost":0.22,"expiry":"2026-06-01"}
+  ],
+  "menuItems": [
+    {
+      "name": "Maple Pancake Scoop",
+      "cat": "Flavors",
+      "price": "$3.99–$8.17",
+      "color": "#CC1F1F",
+      "desc": "March feature! Buttery maple ice cream with syrup-infused yellow cake pieces.",
+      "ings": ["Whole Milk 200ml", "Heavy Cream 100ml", "Maple Syrup 30ml"]
+    }
+  ]
+}

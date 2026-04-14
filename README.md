@@ -1,4 +1,4 @@
-# 🍒 Bruster's Inventory Intelligence (Store #433)
+# 🍒 Inventory Intelligence (Store #433)
 
 An interactive, AI-driven inventory management dashboard designed for the **Oakbrook Terrace, IL** Bruster’s Real Ice Cream location. This system tracks ingredient levels, forecasts demand based on seasonal trends, and provides actionable operational insights.
 
@@ -27,4 +27,4 @@ An interactive, AI-driven inventory management dashboard designed for the **Oakb
 The system is currently configured for **March 2026** operations, focusing on the "Maple Pancake" feature flavor and managing high-demand weekend spikes.
 
 ## 📜 License
-This project is for educational/operational management purposes for Bruster's Real Ice Cream Store #433.
+This project is for educational/operational management purposes for Real Ice Cream Store #433.

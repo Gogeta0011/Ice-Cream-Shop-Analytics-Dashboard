@@ -2,7 +2,8 @@
 
 An interactive, AI-driven inventory management dashboard designed for the **Oakbrook Terrace, IL** Bruster’s Real Ice Cream location. This system tracks ingredient levels, forecasts demand based on seasonal trends, and provides actionable operational insights.
 
-![Dashboard Preview](assets/screenshot.png) ## 🚀 Features
+![Dashboard Preview](assets/screenshot.png) 
+## 🚀 Features
 * **Real-time Stock Tracking:** Visual progress bars and status badges (Critical/Low/Healthy) for 28+ ingredients.
 * **AI Insight Engine:** Simulated machine learning models that suggest batches (e.g., Maple Pancake) and restock priorities based on sales data and weather patterns.
 * **Dynamic Menu & Recipes:** Automatic ingredient usage calculation per serving for 18 active menu items.

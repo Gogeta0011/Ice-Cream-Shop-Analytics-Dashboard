@@ -761,80 +761,35 @@ td strong { font-weight: 700; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ─── DATA ───────────────────────────────────────────────
-const inventory = [
-  {name:'Whole Milk',cat:'Dairy',qty:18,max:30,unit:'L',status:'ok',cost:'$0.90',expiry:'2026-03-22'},
-  {name:'Heavy Cream',cat:'Dairy',qty:2.5,max:10,unit:'L',status:'critical',cost:'$4.40',expiry:'2026-03-17'},
-  {name:'2% Milk',cat:'Dairy',qty:8,max:15,unit:'L',status:'ok',cost:'$0.75',expiry:'2026-03-24'},
-  {name:'Sugar',cat:'Sweeteners',qty:14,max:20,unit:'kg',status:'ok',cost:'$1.20',expiry:'—'},
-  {name:'Brown Sugar',cat:'Sweeteners',qty:3.5,max:10,unit:'kg',status:'low',cost:'$1.50',expiry:'—'},
-  {name:'Maple Syrup',cat:'Sweeteners',qty:0.8,max:4,unit:'L',status:'critical',cost:'$12.00',expiry:'2026-11-01'},
-  {name:'Strawberry Puree',cat:'Flavors & Mix-ins',qty:6.2,max:8,unit:'kg',status:'ok',cost:'$6.50',expiry:'2026-04-01'},
-  {name:'Cocoa Powder',cat:'Flavors & Mix-ins',qty:4.8,max:6,unit:'kg',status:'ok',cost:'$5.20',expiry:'2026-11-01'},
-  {name:'Vanilla Extract',cat:'Flavors & Mix-ins',qty:0.4,max:2,unit:'L',status:'low',cost:'$22.00',expiry:'2026-12-01'},
-  {name:'Peanut Butter',cat:'Flavors & Mix-ins',qty:1.2,max:4,unit:'kg',status:'low',cost:'$4.80',expiry:'2026-07-01'},
-  {name:'Banana Puree',cat:'Flavors & Mix-ins',qty:3.0,max:5,unit:'kg',status:'ok',cost:'$3.20',expiry:'2026-03-25'},
-  {name:'Yellow Cake Pieces',cat:'Flavors & Mix-ins',qty:2.8,max:4,unit:'kg',status:'ok',cost:'$8.00',expiry:'2026-04-10'},
-  {name:'Waffle Cones',cat:'Cones & Toppings',qty:48,max:200,unit:'units',status:'critical',cost:'$0.22',expiry:'2026-06-01'},
-  {name:'Sugar Cones',cat:'Cones & Toppings',qty:130,max:200,unit:'units',status:'ok',cost:'$0.15',expiry:'2026-07-01'},
-  {name:'Waffle Bowls (Lg)',cat:'Cones & Toppings',qty:35,max:100,unit:'units',status:'low',cost:'$0.45',expiry:'2026-06-01'},
-  {name:'Hot Fudge Sauce',cat:'Cones & Toppings',qty:3.2,max:5,unit:'kg',status:'ok',cost:'$7.20',expiry:'2026-05-01'},
-  {name:'Caramel Sauce',cat:'Cones & Toppings',qty:2.8,max:5,unit:'kg',status:'ok',cost:'$6.80',expiry:'2026-05-15'},
-  {name:'Rainbow Sprinkles',cat:'Cones & Toppings',qty:1.4,max:3,unit:'kg',status:'ok',cost:'$4.00',expiry:'2026-09-01'},
-  {name:'Whipped Cream',cat:'Cones & Toppings',qty:6,max:12,unit:'cans',status:'ok',cost:'$3.50',expiry:'2026-04-20'},
-  {name:'Maraschino Cherries',cat:'Cones & Toppings',qty:2,max:4,unit:'jars',status:'ok',cost:'$5.00',expiry:'2026-10-01'},
-  {name:'Pint Cups',cat:'Packaging',qty:180,max:400,unit:'units',status:'ok',cost:'$0.18',expiry:'—'},
-  {name:'Quart Containers',cat:'Packaging',qty:95,max:200,unit:'units',status:'ok',cost:'$0.35',expiry:'—'},
-  {name:'Half Gallon Tubs',cat:'Packaging',qty:30,max:80,unit:'units',status:'ok',cost:'$0.85',expiry:'—'},
-  {name:'Blast Cups (Lg)',cat:'Packaging',qty:120,max:300,unit:'units',status:'ok',cost:'$0.20',expiry:'—'},
-  {name:'Napkins',cat:'Packaging',qty:800,max:2000,unit:'units',status:'ok',cost:'$0.01',expiry:'—'},
-  {name:'Spoons (Plastic)',cat:'Packaging',qty:450,max:1000,unit:'units',status:'ok',cost:'$0.02',expiry:'—'},
-  {name:'Cake Bases',cat:'Packaging',qty:8,max:20,unit:'units',status:'low',cost:'$2.50',expiry:'—'},
-  {name:'To-Go Bags',cat:'Packaging',qty:60,max:200,unit:'units',status:'ok',cost:'$0.08',expiry:'—'},
-];
+// 1. Data placeholders
+let inventory = [];
+let menuItems = [];
+let purchases = []; // Add this if you moved purchase history to JSON too
 
-const menuItems = [
-  {name:'Maple Pancake Scoop',cat:'Flavors',price:'$3.99–$8.17',color:'#CC1F1F',desc:'March feature! Buttery maple ice cream with syrup-infused yellow cake pieces.',ings:['Whole Milk 200ml','Heavy Cream 100ml','Maple Syrup 30ml','Yellow Cake Pieces 40g','Sugar 70g']},
-  {name:'Banana PB Swirl Scoop',cat:'Flavors',price:'$3.99–$8.17',color:'#E8956D',desc:'Banana ice cream with peanut butter swirls.',ings:['Whole Milk 200ml','Heavy Cream 80ml','Banana Puree 60g','Peanut Butter 30g','Sugar 65g']},
-  {name:'Classic Vanilla Scoop',cat:'Flavors',price:'$3.99–$8.17',color:'#F5C842',desc:'Bruster\'s signature vanilla — fresh-made daily.',ings:['Whole Milk 200ml','Heavy Cream 100ml','Vanilla Extract 5ml','Sugar 80g']},
-  {name:'Strawberry Scoop',cat:'Flavors',price:'$3.99–$8.17',color:'#EC4899',desc:'Real strawberry puree blended into fresh ice cream.',ings:['Whole Milk 200ml','Heavy Cream 80ml','Strawberry Puree 65g','Sugar 70g']},
-  {name:'Chocolate Fudge Scoop',cat:'Flavors',price:'$3.99–$8.17',color:'#5C3D2E',desc:'Rich double chocolate made fresh in-store.',ings:['Whole Milk 200ml','Heavy Cream 100ml','Cocoa Powder 35g','Sugar 85g']},
-  {name:'Large Waffle Bowl',cat:'Specialty',price:'$9.19',color:'#E8956D',desc:'3 scoops served in a handmade waffle bowl.',ings:['Waffle Bowls (Lg) 1','Whole Milk 600ml','Heavy Cream 200ml','Sugar 180g','Flavor of choice']},
-  {name:'Small Waffle Bowl',cat:'Specialty',price:'$6.99',color:'#E8956D',desc:'2 scoops in a crisp handmade waffle bowl.',ings:['Waffle Bowls (Lg) 1','Whole Milk 400ml','Heavy Cream 150ml','Sugar 120g']},
-  {name:'Hot Fudge Sundae',cat:'Sundaes & Splits',price:'$7.49',color:'#5C3D2E',desc:'Vanilla ice cream topped with hot fudge, whipped cream & cherry.',ings:['Whole Milk 250ml','Heavy Cream 100ml','Hot Fudge Sauce 50g','Whipped Cream 1 can','Maraschino Cherries 1','Sugar 80g']},
-  {name:'Strawberry Banana Split',cat:'Sundaes & Splits',price:'$8.99',color:'#EC4899',desc:'Classic banana split with 3 flavors & all the toppings.',ings:['Whole Milk 600ml','Heavy Cream 150ml','Banana Puree 1','Strawberry Puree 40g','Whipped Cream 1 can','Maraschino Cherries 2','Rainbow Sprinkles 10g']},
-  {name:'Peanut Butter Blast',cat:'Blasts',price:'$7.79–$9.19',color:'#8B5CF6',desc:'Ice cream blended with Reese\'s pieces & peanut butter.',ings:['Whole Milk 250ml','Heavy Cream 80ml','Peanut Butter 45g','Sugar 70g']},
-  {name:'Caramel Waffle Blast',cat:'Blasts',price:'$7.79–$9.19',color:'#D97706',desc:'Vanilla ice cream blended with caramel & waffle cone pieces.',ings:['Whole Milk 250ml','Heavy Cream 80ml','Caramel Sauce 40g','Waffle Cones 1','Sugar 65g']},
-  {name:'Vanilla Shake',cat:'Shakes & Freezes',price:'$6.49–$7.99',color:'#F5C842',desc:'Thick old-fashioned vanilla milkshake.',ings:['Whole Milk 300ml','Heavy Cream 50ml','Vanilla Extract 4ml','Sugar 60g']},
-  {name:'Strawberry Freeze',cat:'Shakes & Freezes',price:'$5.99–$7.49',color:'#EC4899',desc:'Blended strawberry sorbet freeze.',ings:['Strawberry Puree 80g','Sugar 50g','2% Milk 200ml']},
-  {name:'Pint — Hand Packed',cat:'Specialty',price:'$7.79',color:'#2ABFA0',desc:'Any flavor hand-packed in a take-home pint.',ings:['Pint Cups 1','Whole Milk 400ml','Heavy Cream 150ml','Sugar 120g','Flavor base']},
-  {name:'Quart — Hand Packed',cat:'Specialty',price:'$10.99',color:'#3B82F6',desc:'Any flavor hand-packed in a take-home quart.',ings:['Quart Containers 1','Whole Milk 800ml','Heavy Cream 300ml','Sugar 240g','Flavor base']},
-  {name:'Half Gallon',cat:'Specialty',price:'$20.99',color:'#CC1F1F',desc:'Any flavor hand-packed half gallon — great for parties!',ings:['Half Gallon Tubs 1','Whole Milk 1600ml','Heavy Cream 600ml','Sugar 480g','Flavor base']},
-  {name:'Ice Cream Cake',cat:'Cakes & Pies',price:'Custom',color:'#EC4899',desc:'Customizable ice cream cake for any celebration.',ings:['Cake Bases 1','Whole Milk 800ml','Heavy Cream 300ml','Sugar 240g','Whipped Cream 2 cans','Flavor of choice']},
-  {name:'Ice Cream Pie',cat:'Cakes & Pies',price:'Custom',color:'#8B5CF6',desc:'Classic ice cream pie with cookie crust.',ings:['Cake Bases 1','Whole Milk 600ml','Heavy Cream 200ml','Sugar 180g','Whipped Cream 2 cans']},
-];
+// 2. The New Loader (Replace the deleted init lines with this)
+async function loadStoreData() {
+  try {
+    const response = await fetch('data.json');
+    const data = await response.json();
+    
+    inventory = data.inventory;
+    menuItems = data.menuItems;
+    purchases = data.purchases || []; 
+    
+    // Now that data is loaded, render everything
+    renderInventory();
+    renderMenu();
+    renderPurchases();
+    initCharts(); 
+  } catch (error) {
+    console.error("Error loading store data:", error);
+    // Optional: add a UI alert here if the data fails to load
+  }
+}
 
-const purchases = [
-  {ing:'Whole Milk',sup:'Midwest Dairy',qty:'20L',cost:'$18.00',date:'2026-03-12',exp:'2026-03-22'},
-  {ing:'Heavy Cream',sup:'Midwest Dairy',qty:'5L',cost:'$22.00',date:'2026-03-10',exp:'2026-03-17'},
-  {ing:'Maple Syrup',sup:'Maple Grove Suppliers',qty:'4L',cost:'$48.00',date:'2026-03-08',exp:'2026-11-01'},
-  {ing:'Yellow Cake Pieces',sup:'Maple Grove Suppliers',qty:'4kg',cost:'$32.00',date:'2026-03-08',exp:'2026-04-10'},
-  {ing:'Strawberry Puree',sup:'Fresh Farms',qty:'8kg',cost:'$52.00',date:'2026-03-11',exp:'2026-04-01'},
-  {ing:'Waffle Cones',sup:'Cone World',qty:'200 units',cost:'$44.00',date:'2026-03-05',exp:'2026-06-01'},
-  {ing:'Sugar',sup:'BulkBuy',qty:'20kg',cost:'$24.00',date:'2026-03-01',exp:'—'},
-  {ing:'Cocoa Powder',sup:'BulkBuy',qty:'6kg',cost:'$31.20',date:'2026-03-01',exp:'2026-11-01'},
-  {ing:'Peanut Butter',sup:'BulkBuy',qty:'4kg',cost:'$19.20',date:'2026-03-03',exp:'2026-07-01'},
-  {ing:'Pint Cups',sup:'PackRight',qty:'400 units',cost:'$72.00',date:'2026-02-28',exp:'—'},
-];
+window.addEventListener('DOMContentLoaded', loadStoreData);
 
-const aiAnswers = {
-  'what should i restock today?': '🛒 <strong>Today\'s restock list for Store #433:</strong><br><br>1. <strong>Heavy Cream (Critical)</strong> — expires Mar 17. Order 4L from Midwest Dairy before 3 PM for Tuesday delivery.<br>2. <strong>Waffle Cones (Critical)</strong> — only 48 left. Weekend demand ~85+. Order from Cone World immediately.<br>3. <strong>Maple Syrup (Critical)</strong> — 0.8L left. March feature Maple Pancake needs ~30ml per serving. Order 4L from Maple Grove Suppliers.<br>4. <strong>Waffle Bowls Large (Low)</strong> — 35 remaining, Large Waffle Bowl is your $9.19 top item. Order 65+ units.',
-  'which flavor will sell most this weekend?': '📈 <strong>Weekend Forecast for Oakbrook Terrace #433:</strong><br><br>🥇 <strong>Maple Pancake</strong> — March feature, trending +40% week-over-week. Saturday peak projected 60+ servings. MAKE MORE TONIGHT.<br>🥈 <strong>Banana Peanut Butter Swirl</strong> — strong Sunday demand, 45+ projected<br>🥉 <strong>Classic Vanilla</strong> — reliable, 50+ across Sat/Sun combined<br><br>⚠️ Your Maple Pancake tub is at 48% — risk of stockout by Saturday 3 PM if you don\'t batch tonight.',
-  'what expires soon?': '⏰ <strong>Expiry watch for Store #433:</strong><br><br>🔴 <strong>Heavy Cream 2.5L</strong> — expires <strong>Mar 17 (2 days!)</strong> Use in today\'s Banana PB Swirl or Maple Pancake batch.<br>🟡 <strong>Banana Puree 3kg</strong> — expires Mar 25 (10 days). Use actively in Banana PB Swirl.<br>🟡 <strong>Strawberry Puree 6.2kg</strong> — expires Apr 1 (17 days). On track with normal usage.<br>🟢 All other items: 3+ weeks remaining. No action needed.',
-  'how much did we spend this month?': '💰 <strong>March spend summary for Store #433:</strong><br><br>Dairy (Milk + Cream): <strong>$118.00</strong> — 37% of spend<br>Flavor bases (Maple, Strawberry, etc): <strong>$80.00</strong> — 25%<br>Cones & Toppings: <strong>$44.00</strong> — 14%<br>Sweeteners (Sugar): <strong>$24.00</strong> — 8%<br>Packaging: <strong>$72.00</strong> — 23%<br><br><strong>Total: $317.50</strong> so far in March. Trending ~$520/month at current rate. Dairy is your largest cost driver.',
-  'is maple pancake stocked enough for the week?': '🧁 <strong>Maple Pancake stock analysis:</strong><br><br>Current tub: ~48% (approx 2.4L effective remaining)<br>Projected demand this week: 280+ servings (~8.4L needed)<br><br>⚠️ <strong>You are short by ~6L for the week.</strong><br><br>Action plan:<br>• Tonight: Batch 4L (uses 800ml Maple Syrup, 1.6L Heavy Cream — order more first!)<br>• Tuesday: Batch another 4L once new cream arrives<br>• By Thursday: Should be fully stocked for weekend peak',
-};
-
+// ... Keep all your existing function definitions (renderInventory, showSection, etc.)
 // ─── RENDER ───────────────────────────────────────────────
 function showSection(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1029,12 +984,6 @@ function initCharts() {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#9A8080'},stacked:false},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:11},color:'#9A8080'}}}}
   });
 }
-
-// ─── INIT ───────────────────────────────────────────────
-renderInventory();
-renderMenu();
-renderPurchases();
-setTimeout(initCharts, 200);
 </script>
 </body>
 </html>
